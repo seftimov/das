@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %} {% block title %} Home page {% endblock %}
+{% block content %} 
+<div class="d-flex justify-content-center align-items-center vh-100" style="background-size: cover; background-position: center;">
+    <div class="bg-light p-4 rounded" style="width: 300px; opacity: 0.9;">
+        <h2 class="text-start mb-4">Login</h2>
+        <p>to get started</p>
+        <form>
+            <div class="mb-3">
+                <input type="email" class="form-control" id="email" placeholder="Email">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" id="password" placeholder="Password">
+            </div>
+            <div class="mb-3 text-start">
+                <a href="#" class="text-decoration-none">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-2">Continue</button>
+        </form>
+        <div class="text-center mt-3">
+            <p>New user? <a href="#" class="text-decoration-none">Register</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>
