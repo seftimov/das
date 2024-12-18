@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %} {% block title %} Home page {% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row d-flex align-items-center">
+        <div class="col-md-6">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+              {
+              "width": "490",
+              "height": "305",
+              "symbol": "NASDAQ:AAPL",
+              "interval": "D",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "1",
+              "locale": "en",
+              "allow_symbol_change": true,
+              "calendar": false,
+              "support_host": "https://www.tradingview.com"
+            }
+              </script>
+            </div>
+            <!-- TradingView Widget END -->
+        </div>
+        <div class="col-md-6 mt-5">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-hotlists.js" async>
+              {
+              "colorTheme": "dark",
+              "dateRange": "12M",
+              "exchange": "US",
+              "showChart": true,
+              "locale": "en",
+              "largeChartUrl": "",
+              "isTransparent": false,
+              "showSymbolLogo": false,
+              "showFloatingTooltip": false,
+              "width": "400",
+              "height": "550",
+              "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
+              "plotLineColorFalling": "rgba(41, 98, 255, 1)",
+              "gridLineColor": "rgba(240, 243, 250, 0)",
+              "scaleFontColor": "rgba(209, 212, 220, 1)",
+              "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
+              "belowLineFillColorFalling": "rgba(41, 98, 255, 0.12)",
+              "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
+              "belowLineFillColorFallingBottom": "rgba(41, 98, 255, 0)",
+              "symbolActiveColor": "rgba(41, 98, 255, 0.12)"
+            }
+              </script>
+            </div>
+            <!-- TradingView Widget END -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>
