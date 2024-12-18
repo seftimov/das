@@ -10,8 +10,16 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 def home(request):
-    symbols = Symbols.objects.all()
-    context = {'symbols': symbols}
+    query = request.GET.get('searched', '')
+    if query:
+        symbols = Symbols.objects.filter(symbol__icontains=query)
+    else:
+        symbols = Symbols.objects.all()
+
+    context = {
+        'symbols': symbols,
+        'query': query
+    }
     return render(request, 'home.html', context)
 
 
