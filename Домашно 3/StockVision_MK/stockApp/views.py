@@ -1,6 +1,7 @@
+from datetime import date
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect, HttpResponse
-from .forms import SignupUserForm
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from .forms import SignupUserForm, StockFilterForm
 from .models import Symbols, StockData
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -23,11 +24,74 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+def convert_currency(value, from_currency, to_currency):
+    if value is None:
+        return "N/A"
+
+    conversion_rates = {
+        'MKD': {'USD': 0.017, 'EUR': 0.016, 'MKD': 1.0},
+    }
+
+    currency_symbols = {
+        'USD': ('$ ', 'before'),
+        'EUR': ('€ ', 'before'),
+        'MKD': (' ден.', 'after'),
+    }
+
+    converted_value = value * conversion_rates[from_currency][to_currency]
+    symbol, position = currency_symbols[to_currency]
+
+    formatted_value = f"{converted_value:,.2f}"
+
+    if position == 'before':
+        return f"{symbol}{formatted_value}"
+    else:
+        return f"{formatted_value}{symbol}"
+
+
 def stock_detail(request, symbol):
-    symbol_obj = Symbols.objects.get(symbol=symbol)
+    symbol_obj = get_object_or_404(Symbols, symbol=symbol)
     stock_data = StockData.objects.filter(issuer_code=symbol)
-    context = {'symbol_obj': symbol_obj,
-               'stock_data': stock_data}
+    selected_currency = 'MKD'
+
+    if request.method == 'POST':
+        form = StockFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            selected_currency = form.cleaned_data.get('currency', 'MKD') or 'MKD'
+
+            if start_date and end_date:
+                stock_data = stock_data.filter(date__range=[start_date, end_date])
+            elif start_date:
+                stock_data = stock_data.filter(date__gte=start_date)
+            elif end_date:
+                stock_data = stock_data.filter(date__lte=end_date)
+    else:
+        current_year = 2024
+        start_date = date(current_year, 1, 1)
+        end_date = date(current_year, 12, 31)
+        stock_data = stock_data.filter(date__range=[start_date, end_date])
+        form = StockFilterForm()
+
+    valid_currencies = {'USD', 'EUR', 'MKD'}
+    if selected_currency not in valid_currencies:
+        selected_currency = 'MKD'
+
+    for stock in stock_data:
+        stock.last_trade_price = convert_currency(stock.last_trade_price, 'MKD', selected_currency)
+        stock.max_price = convert_currency(stock.max_price, 'MKD', selected_currency)
+        stock.min_price = convert_currency(stock.min_price, 'MKD', selected_currency)
+        stock.avg_price = convert_currency(stock.avg_price, 'MKD', selected_currency)
+        stock.turnover_best = convert_currency(stock.turnover_best, 'MKD', selected_currency)
+        stock.total_turnover = convert_currency(stock.total_turnover, 'MKD', selected_currency)
+
+    context = {
+        'symbol_obj': symbol_obj,
+        'stock_data': stock_data,
+        'form': form,
+    }
+
     return render(request, 'stock_detail.html', context)
 
 

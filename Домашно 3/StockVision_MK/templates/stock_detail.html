@@ -32,26 +32,23 @@
       </script>
     </div>
     <!-- TradingView Widget END -->
-    <form>
+    <form action="{% url 'stock_detail' symbol=symbol_obj.symbol %}" method="POST">
+        {% csrf_token %}
         <div class="row">
             <div class="col-md-2">
-                <input type="date" class="form-control" id="dateFrom">
+                {{ form.start_date }}
             </div>
-
+    
             <div class="col-md-2">
-                <input type="date" class="form-control" id="dateTo">
+                {{ form.end_date }}
             </div>
-
+    
             <div class="col-md-4"></div>
-
+            
             <div class="col-md-2">
-                <select class="form-select" id="currency">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="MKD">MKD</option>
-                </select>
+                {{ form.currency }} 
             </div>
-
+    
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
