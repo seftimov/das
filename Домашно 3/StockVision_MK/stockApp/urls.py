@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-
+from .views import StockDataAPIView
 
 urlpatterns = [
     path('home/', views.home, name='home'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout_user/', views.logout_user, name='logout'),
     path('signup_user/', views.signup_user, name='signup'),
     path('analytics/', views.analytics, name='analytics'),
+    path('api/stock-data/', StockDataAPIView.as_view(), name='stock-data-api'),
 ]

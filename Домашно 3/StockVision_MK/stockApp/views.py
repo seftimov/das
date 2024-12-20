@@ -6,6 +6,9 @@ from .models import Symbols, StockData
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import StockDataSerializer
 
 # Create your views here.
 
@@ -139,3 +142,27 @@ def signup_user(request):
 
 def analytics(request):
     return render(request, 'analytics.html')
+
+
+class StockDataAPIView(APIView):
+    def get(self, request):
+        symbol = request.query_params.get('symbol', 'ADIN')
+
+        try:
+            symbol_obj = Symbols.objects.get(symbol=symbol)
+        except Symbols.DoesNotExist:
+            return Response({"error": "Symbol not found"}, status=404)
+
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        stock_data = StockData.objects.filter(issuer_code=symbol_obj)
+
+        if start_date:
+            stock_data = stock_data.filter(date__gte=start_date)  # Filter by start date
+        if end_date:
+            stock_data = stock_data.filter(date__lte=end_date)  # Filter by end date
+
+        serializer = StockDataSerializer(stock_data, many=True)
+
+        return Response(serializer.data)
